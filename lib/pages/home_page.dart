@@ -27,14 +27,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("HomePage"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Chats",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: signOut,
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.black),
           ),
         ],
       ),
+      backgroundColor: Colors.white,
       body: _buildUserList(),
     );
   }
@@ -45,15 +56,28 @@ class _HomePageState extends State<HomePage> {
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text('Error');
+          return const Center(
+            child: Text(
+              'Error loading users',
+              style: TextStyle(color: Colors.red),
+            ),
+          );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading...');
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
-        return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserListItem(doc))
-              .toList(),
+        return ListView.separated(
+          separatorBuilder: (context, index) => const Divider(
+            height: 1,
+            color: Colors.grey,
+          ),
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+            final doc = snapshot.data!.docs[index];
+            return _buildUserListItem(doc);
+          },
         );
       },
     );
@@ -65,14 +89,26 @@ class _HomePageState extends State<HomePage> {
 
     if (_auth.currentUser!.email != data['email']) {
       return ListTile(
-        title: Text(data['email']),
+        leading: CircleAvatar(
+          backgroundColor: Colors.blueAccent,
+          child: Text(
+            data['email'][0].toUpperCase(),
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+        title: Text(
+          data['email'],
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatPage(
-              receiverUserEmail: data['email'],
-              receiverUserId: data['uid'],
-            )),
+            MaterialPageRoute(
+              builder: (context) => ChatPage(
+                receiverUserEmail: data['email'],
+                receiverUserId: data['uid'],
+              ),
+            ),
           );
         },
       );
