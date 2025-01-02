@@ -21,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void signup() async{
     if(passController.text != ConfirmpassController.text){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password doesn't match"),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password doesn't match"),
       ),
       );
     }
@@ -106,5 +106,4 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-  
 }
