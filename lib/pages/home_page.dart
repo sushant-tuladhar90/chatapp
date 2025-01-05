@@ -84,36 +84,42 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Build individual user list item
-  Widget _buildUserListItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+Widget _buildUserListItem(DocumentSnapshot document) {
+  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-    if (_auth.currentUser!.email != data['email']) {
-      return ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blueAccent,
-          child: Text(
-            data['email'][0].toUpperCase(),
-            style: const TextStyle(color: Colors.white),
-          ),
+  // Ensure we're not showing the current user
+  if (_auth.currentUser!.uid != data['uid']) {
+    // Use a fallback if the username is null or missing
+    String username = data['username'] ?? 'Unknown User';  // Default to 'Unknown User' if username is null
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.blueAccent,
+        child: Text(
+          username.isNotEmpty ? username[0].toUpperCase() : '?', // Show the first letter of the username or '?' if username is empty
+          style: const TextStyle(color: Colors.white),
         ),
-        title: Text(
-          data['email'],
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
-                receiverUserEmail: data['email'],
-                receiverUserId: data['uid'],
-              ),
+      ),
+      title: Text(
+        username,  // Show the username or fallback value
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+              receiverUsername: username,
+              receiverUserId: data['uid'],
             ),
-          );
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
+          ),
+        );
+      },
+    );
+  } else {
+    return const SizedBox.shrink();  // Don't show the current user in the list
   }
+}
+
+
 }

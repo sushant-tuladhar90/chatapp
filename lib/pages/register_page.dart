@@ -13,30 +13,47 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-   //text controller
+  // Text controllers
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passController = TextEditingController();
-  final ConfirmpassController = TextEditingController();
+  final confirmpassController = TextEditingController();
 
+  // Sign-up method
+  void signup() async {
+    if (passController.text != confirmpassController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Passwords do not match"),
+        ),
+      );
+      return;
+    }
 
-  void signup() async{
-    if(passController.text != ConfirmpassController.text){
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password doesn't match"),
-      ),
+    // Get AuthService instance
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    try {
+      await authService.signUpWithEmailAndPassword(
+        usernameController.text, // Username
+        emailController.text,    // Email
+        passController.text,     // Password
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account created successfully!"),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
       );
     }
-
-    //get auth service
-    final  authService = Provider.of<AuthService>(context, listen: false);
-    try{
-      await authService.signUpWithEmailandPassword(emailController.text, passController.text);
-    }
-    catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString(),),),);
-
-    }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,58 +64,86 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50,),
-                //logo 
-                const Icon(Icons.message,
-                size: 100,
-                color: Colors.grey,
-                ),       
-                const SizedBox(height: 25,),
-                //create account message
-                const Text("Let's create an accout for you",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF616161),
-                  
-                ),),
-                const SizedBox(height: 50,),
-            
-            
-                //email textfield
-                MyTextfield(controller: emailController, hintText: "Email or Phone Number", obscureText: false),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 50),
+                // Logo
+                const Icon(
+                  Icons.message,
+                  size: 100,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 25),
+                // Create account message
+                const Text(
+                  "Let's create an account for you",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF616161),
+                  ),
+                ),
+                const SizedBox(height: 50),
 
-                //password textfield
-                MyTextfield(controller: passController, hintText: "Password", obscureText: true),
-                const SizedBox(height: 10,),
+                // Username text field
+                MyTextfield(
+                  controller: usernameController,
+                  hintText: "Username",
+                  obscureText: false,
+                ),
+                const SizedBox(height: 10),
 
-                //confirm password textfield
-                 MyTextfield(controller: ConfirmpassController, hintText: "Confirm Password", obscureText: true),
-                const SizedBox(height: 30,),
-            
-                //sign up button
-                MyButton(onTap: signup , text: "Sign Up",),
-                const SizedBox(height: 40,),
-            
-                //no a member? register now
+                // Email text field
+                MyTextfield(
+                  controller: emailController,
+                  hintText: "Email or Phone Number",
+                  obscureText: false,
+                ),
+                const SizedBox(height: 10),
+
+                // Password text field
+                MyTextfield(
+                  controller: passController,
+                  hintText: "Password",
+                  obscureText: true,
+                ),
+                const SizedBox(height: 10),
+
+                // Confirm password text field
+                MyTextfield(
+                  controller: confirmpassController,
+                  hintText: "Confirm Password",
+                  obscureText: true,
+                ),
+                const SizedBox(height: 30),
+
+                // Sign-up button
+                MyButton(
+                  onTap: signup,
+                  text: "Sign Up",
+                ),
+                const SizedBox(height: 40),
+
+                // Already a member? Login now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already a member?', style: TextStyle(
-                      color: Color(0xFF616161),
-                    ),),
-                    const SizedBox(width: 5,),
+                    const Text(
+                      'Already a member?',
+                      style: TextStyle(
+                        color: Color(0xFF616161),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
                     GestureDetector(
                       onTap: widget.onTap,
-                      child: const Text('Login Now' , style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF616161),
-                      ),),
-                    )
+                      child: const Text(
+                        'Login Now',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF616161),
+                        ),
+                      ),
+                    ),
                   ],
-                )
-            
-            
+                ),
               ],
             ),
           ),

@@ -13,21 +13,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  //text controller
+  // Text controllers
   final emailController = TextEditingController();
   final passController = TextEditingController();
 
-  Future<void> signin () async {
-    //get auth srvice
+  // Sign-in method
+  Future<void> signin() async {
+    // Get AuthService instance
     final authService = Provider.of<AuthService>(context, listen: false);
 
     try {
-      await authService.signInWithEmailandPassword(
-        emailController.text, 
-        passController.text);
+      await authService.signInWithEmailAndPassword(
+        emailController.text, // Email
+        passController.text,  // Password
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString(),),),);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
     }
   }
 
@@ -41,57 +46,70 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50,),
-                //logo 
-                const Icon(Icons.message,
-                size: 100,
-                color: Colors.grey,
-                ),       
-                const SizedBox(height: 25,),
-                //welcome back message
-                const Text("Welcome back you've been missed!!",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF616161),
-                  
-                ),),
-                const SizedBox(height: 50,),
-            
-            
-                //email textfield
-                MyTextfield(controller: emailController, hintText: "Email or Phone Number", obscureText: false),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 50),
+                // Logo
+                const Icon(
+                  Icons.message,
+                  size: 100,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 25),
+                // Welcome message
+                const Text(
+                  "Welcome back, you've been missed!!",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF616161),
+                  ),
+                ),
+                const SizedBox(height: 50),
 
-                //password textfield
-                MyTextfield(controller: passController, hintText: "Password", obscureText: true),
-                const SizedBox(height: 30,),
-            
-                //sign in button
-                MyButton(onTap: signin , text: "Login"),
-                const SizedBox(height: 40,),
-            
-                //no a member? register now
+                // Email text field
+                MyTextfield(
+                  controller: emailController,
+                  hintText: "Email or Phone Number",
+                  obscureText: false,
+                ),
+                const SizedBox(height: 10),
+
+                // Password text field
+                MyTextfield(
+                  controller: passController,
+                  hintText: "Password",
+                  obscureText: true,
+                ),
+                const SizedBox(height: 30),
+
+                // Sign-in button
+                MyButton(
+                  onTap: signin,
+                  text: "Login",
+                ),
+                const SizedBox(height: 40),
+
+                // Not a member? Register now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Not a member?', style: TextStyle(
-                      color: Color(0xFF616161),
-                    ),),
-                    const SizedBox(width: 5,),
-
-                    // GestureDetector.
-
+                    const Text(
+                      'Not a member?',
+                      style: TextStyle(
+                        color: Color(0xFF616161),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
                     GestureDetector(
                       onTap: widget.onTap,
-                      child: const Text('Register Now' , style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF616161),
-                      ),),
-                    )
+                      child: const Text(
+                        'Register Now',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF616161),
+                        ),
+                      ),
+                    ),
                   ],
-                )
-            
-            
+                ),
               ],
             ),
           ),
